@@ -121,6 +121,22 @@ function drawSmiley(x, y, radius) {
     ctx.fill();
 }
 
+function drawSquare(x, y, size) {
+    ctx.beginPath();
+    ctx.rect(x - size / 2, y - size / 2, size, size);
+    ctx.fill();
+}
+
+function drawTriangle(x, y, size) {
+    const height = size * (Math.sqrt(3)/2);
+    ctx.beginPath();
+    ctx.moveTo(x, y - height / 2);
+    ctx.lineTo(x + size / 2, y + height / 2);
+    ctx.lineTo(x - size / 2, y + height / 2);
+    ctx.closePath();
+    ctx.fill();
+}
+
 
 function drawShapeAt(x, y) {
     switch (currentShape) {
@@ -132,10 +148,16 @@ function drawShapeAt(x, y) {
             drawMoon(x, y, ctx.lineWidth);
             break;
         case 'heart':
-            drawHeart(x, y, ctx.lineWidth);
+            drawHeart(x, y, ctx.lineWidth * 2);
             break;
         case 'smiley':
             drawSmiley(x, y, ctx.lineWidth);
+            break;
+        case 'square':
+            drawSquare(x, y, ctx.lineWidth * 2);
+            break;
+        case 'triangle':
+            drawTriangle(x, y, ctx.lineWidth * 2);
             break;
     }
 }
