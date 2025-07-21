@@ -53,6 +53,12 @@ body {
   border-radius: 50%;
   border: 2px solid #555;
   cursor: pointer;
+  transition: transform 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.color-btn.selected {
+  transform: scale(1.2);
+  border-color: #007bff;
 }
 
 .shape-controls {
@@ -69,7 +75,7 @@ body {
   font-family: inherit;
   background-color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s, transform 0.15s ease-out;
   color: #213547;
   display: flex;
   align-items: center;
@@ -77,6 +83,12 @@ body {
 }
 .shape-btn:hover {
   border-color: #747bff;
+}
+
+.shape-btn.selected {
+  transform: scale(1.1);
+  border-color: #007bff;
+  background-color: #e6f2ff; /* A light blue */
 }
 
 .shape-btn svg {

@@ -267,9 +267,14 @@ document.addEventListener('touchend', stopSliding);
 
 
 // --- Toolbar controls ---
-document.querySelectorAll('.color-btn').forEach(button => {
+const colorBtns = document.querySelectorAll('.color-btn');
+colorBtns.forEach(button => {
   button.addEventListener('click', (e) => {
-    currentColor = e.currentTarget.dataset.color;
+    colorBtns.forEach(btn => btn.classList.remove('selected'));
+    const clickedButton = e.currentTarget;
+    clickedButton.classList.add('selected');
+    
+    currentColor = clickedButton.dataset.color;
     if (currentColor !== 'rainbow') {
       ctx.strokeStyle = currentColor;
       ctx.fillStyle = currentColor;
@@ -277,8 +282,11 @@ document.querySelectorAll('.color-btn').forEach(button => {
   });
 });
 
-document.querySelectorAll('.shape-btn').forEach(button => {
+const shapeBtns = document.querySelectorAll('.shape-controls .shape-btn');
+shapeBtns.forEach(button => {
   button.addEventListener('click', (e) => {
+    shapeBtns.forEach(btn => btn.classList.remove('selected'));
+    e.currentTarget.classList.add('selected');
     currentShape = e.currentTarget.dataset.shape;
   });
 });
@@ -296,3 +304,7 @@ fullscreenBtn.addEventListener('click', () => {
         }
     }
 });
+
+// --- Set initial active buttons ---
+document.querySelector('.color-btn[data-color="black"]').classList.add('selected');
+document.querySelector('.shape-btn[data-shape="line"]').classList.add('selected');
