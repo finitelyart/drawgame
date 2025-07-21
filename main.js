@@ -5,6 +5,8 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 let currentShape = 'line';
+let currentColor = 'black';
+let hue = 0;
 
 // --- Set canvas size ---
 function setCanvasSize() {
@@ -83,6 +85,42 @@ function drawMoon(x, y, radius) {
     ctx.fill();
 }
 
+function drawHeart(x, y, size) {
+    const width = size;
+    const height = size;
+    y = y - height/2; // centering
+
+    ctx.beginPath();
+    var topCurveHeight = height * 0.3;
+    ctx.moveTo(x, y + topCurveHeight);
+    // top left curve
+    ctx.bezierCurveTo( x, y, x - width / 2, y, x - width / 2, y + topCurveHeight);
+    // bottom left curve
+    ctx.bezierCurveTo( x - width / 2, y + (height + topCurveHeight) / 2, x, y + (height + topCurveHeight) / 2, x, y + height);
+    // bottom right curve
+    ctx.bezierCurveTo( x, y + (height + topCurveHeight) / 2, x + width / 2, y + (height + topCurveHeight) / 2, x + width / 2, y + topCurveHeight);
+    // top right curve
+    ctx.bezierCurveTo(x + width / 2, y, x, y, x, y + topCurveHeight);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function drawSmiley(x, y, radius) {
+    ctx.beginPath();
+    // Left eye
+    ctx.arc(x - radius * 0.4, y - radius * 0.2, radius * 0.15, 0, Math.PI * 2, true);
+    // Right eye
+    ctx.moveTo(x + radius * 0.4 + radius * 0.15, y - radius * 0.2);
+    ctx.arc(x + radius * 0.4, y - radius * 0.2, radius * 0.15, 0, Math.PI * 2, true);
+    // Mouth
+    ctx.moveTo(x + radius*0.6, y + radius*0.3);
+    ctx.arc(x, y + radius*0.3, radius*0.6, 0, Math.PI, false);
+    const smileThickness = radius * 0.15;
+    ctx.arc(x, y + radius*0.3, radius*0.6 - smileThickness, Math.PI, 0, true);
+    ctx.closePath();
+    ctx.fill();
+}
+
 
 function drawShapeAt(x, y) {
     switch (currentShape) {
@@ -92,6 +130,12 @@ function drawShapeAt(x, y) {
             break;
         case 'moon':
             drawMoon(x, y, ctx.lineWidth);
+            break;
+        case 'heart':
+            drawHeart(x, y, ctx.lineWidth);
+            break;
+        case 'smiley':
+            drawSmiley(x, y, ctx.lineWidth);
             break;
     }
 }
@@ -103,6 +147,10 @@ function draw(e) {
   const { x, y } = getCoords(e);
 
   if (currentShape === 'line') {
+      if (currentColor === 'rainbow') {
+        hue = (hue + 5) % 360;
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+      }
       ctx.beginPath();
       // start from
       ctx.moveTo(lastX, lastY);
@@ -110,7 +158,8 @@ function draw(e) {
       ctx.lineTo(x, y);
       ctx.stroke();
   } else {
-      ctx.fillStyle = ctx.strokeStyle;
+      ctx.fillStyle = ctx.strokeStyle; // for non-rainbow colors
+      
       const dist = Math.hypot(x - lastX, y - lastY);
       // Spacing based on brush size
       const step = ctx.lineWidth; 
@@ -121,10 +170,18 @@ function draw(e) {
           for (let i = step; i < dist; i += step) {
               const newX = lastX + Math.cos(angle) * i;
               const newY = lastY + Math.sin(angle) * i;
+              if (currentColor === 'rainbow') {
+                hue = (hue + 20) % 360;
+                ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+              }
               drawShapeAt(newX, newY);
           }
       }
       // Draw at the final point to ensure it feels responsive
+      if (currentColor === 'rainbow') {
+        hue = (hue + 20) % 360;
+        ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+      }
       drawShapeAt(x, y);
   }
 
@@ -212,12 +269,30 @@ document.addEventListener('touchend', stopSliding);
 // --- Toolbar controls ---
 document.querySelectorAll('.color-btn').forEach(button => {
   button.addEventListener('click', (e) => {
-    ctx.strokeStyle = e.target.dataset.color;
+    currentColor = e.currentTarget.dataset.color;
+    if (currentColor !== 'rainbow') {
+      ctx.strokeStyle = currentColor;
+      ctx.fillStyle = currentColor;
+    }
   });
 });
 
 document.querySelectorAll('.shape-btn').forEach(button => {
   button.addEventListener('click', (e) => {
-    currentShape = e.target.dataset.shape;
+    currentShape = e.currentTarget.dataset.shape;
   });
+});
+
+// --- Fullscreen ---
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
 });

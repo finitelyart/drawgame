@@ -3,9 +3,8 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #213547;
+  background-color: #f0f8ff; /* Alice Blue */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -52,7 +51,7 @@ body {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid #555;
   cursor: pointer;
 }
 
@@ -64,32 +63,36 @@ body {
 .shape-btn {
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid #555;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #fff;
   cursor: pointer;
   transition: border-color 0.25s;
-  color: rgba(255, 255, 255, 0.87);
+  color: #213547;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .shape-btn:hover {
-  border-color: #646cff;
+  border-color: #747bff;
 }
 
 .shape-btn svg {
   pointer-events: none;
 }
 
+#rainbow-btn {
+    background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
+}
+
 #slider-container {
   width: 90vw;
   max-width: 800px;
   height: 25px;
-  background-color: #444;
-  border: 2px solid #ccc;
+  background-color: #ddd;
+  border: 2px solid #aaa;
   box-sizing: border-box;
   margin-top: 10px;
   position: relative;
@@ -106,6 +109,6 @@ body {
   left: 0;
   cursor: ew-resize;
   border-radius: 3px;
-  border: 2px solid white;
+  border: 2px solid #555;
   box-sizing: border-box;
 }

@@ -18,6 +18,12 @@
         <button class="shape-btn" data-shape="moon" title="Moon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21.64 13.5A9.26 9.26 0 0 1 11.5 3.36a9.21 9.21 0 0 0 0 17.28 9.26 9.26 0 0 1 10.14-7.14z"/></svg>
         </button>
+        <button class="shape-btn" data-shape="heart" title="Heart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+        <button class="shape-btn" data-shape="smiley" title="Smiley Face">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+        </button>
       </div>
       <div class="color-controls">
         <button class="color-btn" style="background-color: black;" data-color="black"></button>
@@ -28,8 +34,12 @@
         <button class="color-btn" style="background-color: orange;" data-color="orange"></button>
         <button class="color-btn" style="background-color: purple;" data-color="purple"></button>
         <button class="color-btn" style="background-color: brown;" data-color="brown"></button>
+        <button class="color-btn" id="rainbow-btn" data-color="rainbow" title="Rainbow"></button>
         <button class="color-btn" style="background-color: white;" data-color="white" title="Eraser"></button>
       </div>
+      <button id="fullscreen-btn" class="shape-btn" title="Full Screen">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+      </button>
     </div>
     <canvas id="drawing-board"></canvas>
     <div id="slider-container">
