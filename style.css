@@ -62,7 +62,7 @@ body {
 }
 
 .shape-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem;
   border-radius: 8px;
   border: 1px solid transparent;
   font-size: 1em;
@@ -72,9 +72,16 @@ body {
   cursor: pointer;
   transition: border-color 0.25s;
   color: rgba(255, 255, 255, 0.87);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .shape-btn:hover {
   border-color: #646cff;
+}
+
+.shape-btn svg {
+  pointer-events: none;
 }
 
 #slider-container {
