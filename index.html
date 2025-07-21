@@ -9,7 +9,6 @@
   <body>
     <h1>Magnetic Drawing Board</h1>
     <div class="toolbar">
-      <button id="clear-btn">Clear</button>
       <div class="color-controls">
         <button class="color-btn" style="background-color: black;" data-color="black"></button>
         <button class="color-btn" style="background-color: red;" data-color="red"></button>
@@ -19,6 +18,9 @@
       </div>
     </div>
     <canvas id="drawing-board"></canvas>
+    <div id="slider-container">
+      <div id="slider-handle"></div>
+    </div>
     <script type="module" src="main.js"></script>
   </body>
 </html>

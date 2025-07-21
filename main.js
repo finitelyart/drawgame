@@ -84,11 +84,69 @@ canvas.addEventListener('touchmove', draw, { passive: false });
 canvas.addEventListener('touchend', stopDrawing);
 canvas.addEventListener('touchcancel', stopDrawing);
 
-// --- Toolbar controls ---
-document.getElementById('clear-btn').addEventListener('click', () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
+// --- Slider clearing ---
+const sliderHandle = document.getElementById('slider-handle');
+const sliderContainer = document.getElementById('slider-container');
+let isSliding = false;
 
+function startSliding(e) {
+    e.preventDefault();
+    isSliding = true;
+}
+
+function stopSliding() {
+    isSliding = false;
+}
+
+function doSlide(e) {
+    if (!isSliding) return;
+    
+    let clientX;
+    if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+    } else {
+        // For mouse, if button is not pressed, stop. Catches mouseup outside window.
+        if (e.buttons !== 1) {
+            stopSliding();
+            return;
+        }
+        clientX = e.clientX;
+    }
+
+    e.preventDefault();
+    
+    const containerRect = sliderContainer.getBoundingClientRect();
+    let x = clientX - containerRect.left;
+
+    // Center handle on cursor
+    x -= sliderHandle.offsetWidth / 2;
+
+    // Clamp position within bounds
+    x = Math.max(0, Math.min(x, sliderContainer.clientWidth - sliderHandle.offsetWidth));
+
+    sliderHandle.style.left = `${x}px`;
+
+    // Map slider position to canvas position and clear
+    const clearX = (x / sliderContainer.clientWidth) * canvas.width;
+    const clearWidth = (sliderHandle.offsetWidth / sliderContainer.clientWidth) * canvas.width;
+    
+    ctx.clearRect(clearX, 0, clearWidth, canvas.height);
+}
+
+
+// Listen on handle for starting
+sliderHandle.addEventListener('mousedown', startSliding);
+sliderHandle.addEventListener('touchstart', startSliding, { passive: false });
+
+// Listen on the whole document for moving and stopping
+document.addEventListener('mousemove', doSlide);
+document.addEventListener('touchmove', doSlide, { passive: false });
+
+document.addEventListener('mouseup', stopSliding);
+document.addEventListener('touchend', stopSliding);
+
+
+// --- Toolbar controls ---
 document.querySelectorAll('.color-btn').forEach(button => {
   button.addEventListener('click', (e) => {
     ctx.strokeStyle = e.target.dataset.color;
