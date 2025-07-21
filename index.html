@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magnetic Drawing Board</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#333333" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
   </head>
   <body>
     <div class="toolbar">
@@ -51,6 +54,69 @@
     <div id="slider-container">
       <div id="slider-handle"></div>
     </div>
+    <div id="install-popup" style="display: none; position: fixed; bottom: 1rem; left: 50%; transform: translateX(-50%); background-color: #333; color: white; padding: 1rem; border-radius: 8px; z-index: 10000; box-shadow: 0 4px 8px rgba(0,0,0,0.3); flex-direction: row; align-items: center; gap: 1rem;">
+      <span>Install app for offline use.</span>
+      <button id="install-btn" style="background-color: #4CAF50; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Install</button>
+      <button id="close-install-popup" style="background-color: #888; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Later</button>
+    </div>
+    <script>
+      // Service Worker registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(error => {
+              console.log('Service Worker registration failed:', error);
+            });
+        });
+      }
+
+      // PWA Install prompt
+      let deferredPrompt;
+      const installPopup = document.getElementById('install-popup');
+      if (installPopup) {
+        const installBtn = document.getElementById('install-btn');
+        const closeInstallPopupBtn = document.getElementById('close-install-popup');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+          // Don't show the prompt if the app is already installed.
+          if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+            return;
+          }
+          // Prevent Chrome 67 and earlier from automatically showing the prompt.
+          e.preventDefault();
+          // Stash the event so it can be triggered later.
+          deferredPrompt = e;
+          // Show our custom install prompt.
+          installPopup.style.display = 'flex';
+        });
+
+        if (installBtn) {
+          installBtn.addEventListener('click', async () => {
+            // Hide our custom prompt.
+            installPopup.style.display = 'none';
+            if (!deferredPrompt) {
+              return;
+            }
+            // Show the browser's install prompt.
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt.
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            // We've used the prompt, and can't use it again, so clear it.
+            deferredPrompt = null;
+          });
+        }
+
+        if(closeInstallPopupBtn) {
+          closeInstallPopupBtn.addEventListener('click', () => {
+            installPopup.style.display = 'none';
+          });
+        }
+      }
+    </script>
     <script type="module" src="main.js"></script>
   </body>
 </html>
