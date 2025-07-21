@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
+let currentShape = 'line';
 
 // --- Set canvas size ---
 function setCanvasSize() {
@@ -52,18 +53,80 @@ function startDrawing(e) {
     [lastX, lastY] = [x, y];
 }
 
+function drawStar(x, y, spikes, outerRadius, innerRadius) {
+    let rot = Math.PI / 2 * 3;
+    let step = Math.PI / spikes;
+    ctx.beginPath();
+    ctx.moveTo(x, y - outerRadius);
+    for (let i = 0; i < spikes; i++) {
+        let cx = x + Math.cos(rot) * outerRadius;
+        let cy = y + Math.sin(rot) * outerRadius;
+        ctx.lineTo(cx, cy);
+        rot += step;
+        cx = x + Math.cos(rot) * innerRadius;
+        cy = y + Math.sin(rot) * innerRadius;
+        ctx.lineTo(cx, cy);
+        rot += step;
+    }
+    ctx.lineTo(x, y - outerRadius);
+    ctx.closePath();
+    ctx.fill();
+}
+
+function drawMoon(x, y, radius) {
+    ctx.beginPath();
+    // Outer arc
+    ctx.arc(x, y, radius, 0.5 * Math.PI, 1.5 * Math.PI, false);
+    // Inner arc to create crescent
+    ctx.arc(x + radius * 0.4, y, radius * 0.8, 1.5 * Math.PI, 0.5 * Math.PI, true);
+    ctx.closePath();
+    ctx.fill();
+}
+
+
+function drawShapeAt(x, y) {
+    switch (currentShape) {
+        case 'star':
+            // Use lineWidth as the 'size' of the shape
+            drawStar(x, y, 5, ctx.lineWidth, ctx.lineWidth / 2);
+            break;
+        case 'moon':
+            drawMoon(x, y, ctx.lineWidth);
+            break;
+    }
+}
+
 function draw(e) {
   if (!isDrawing) return; // stop the function if they are not mouse down
   e.preventDefault();
   
   const { x, y } = getCoords(e);
 
-  ctx.beginPath();
-  // start from
-  ctx.moveTo(lastX, lastY);
-  // go to
-  ctx.lineTo(x, y);
-  ctx.stroke();
+  if (currentShape === 'line') {
+      ctx.beginPath();
+      // start from
+      ctx.moveTo(lastX, lastY);
+      // go to
+      ctx.lineTo(x, y);
+      ctx.stroke();
+  } else {
+      ctx.fillStyle = ctx.strokeStyle;
+      const dist = Math.hypot(x - lastX, y - lastY);
+      // Spacing based on brush size
+      const step = ctx.lineWidth; 
+
+      if (dist > step) {
+          const angle = Math.atan2(y - lastY, x - lastX);
+          // Interpolate points along the path to fill gaps
+          for (let i = step; i < dist; i += step) {
+              const newX = lastX + Math.cos(angle) * i;
+              const newY = lastY + Math.sin(angle) * i;
+              drawShapeAt(newX, newY);
+          }
+      }
+      // Draw at the final point to ensure it feels responsive
+      drawShapeAt(x, y);
+  }
 
   [lastX, lastY] = [x, y];
 }
@@ -150,5 +213,11 @@ document.addEventListener('touchend', stopSliding);
 document.querySelectorAll('.color-btn').forEach(button => {
   button.addEventListener('click', (e) => {
     ctx.strokeStyle = e.target.dataset.color;
+  });
+});
+
+document.querySelectorAll('.shape-btn').forEach(button => {
+  button.addEventListener('click', (e) => {
+    currentShape = e.target.dataset.shape;
   });
 });
